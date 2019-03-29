@@ -74,6 +74,7 @@
                 "agent-count": 2,
                 "agent-vm-size": "Standard_DS3_v2",
 
+                "enable-rbac": true,
                 "enable-http-application-routing": false,
                 "enable-oms-agent": true,
 
@@ -156,8 +157,10 @@
             "acr",
             "ra",
             "aks",
+            "permissions-scripts-pre-reqs",
             "scripts-pre-reqs",
-            "create-ca-cert"
+            "create-ca-cert",
+            "create-cluster-rbac-role-bindings"
         ],
         "module-validation-dependencies": [
         ],
@@ -240,6 +243,14 @@
                     ]
                 },
                 {
+                    "module": "permissions-scripts-pre-reqs",
+                    "type": "bash",
+                    "command": "chmod +x scripts/aks/install-kubectl.sh",
+                    "dependencies": [
+                        "aks"
+                    ]
+                }, 
+                {
                     "module": "scripts-pre-reqs",
                     "type": "bash",
                     "command": "scripts/aks/install-kubectl.sh",
@@ -251,6 +262,14 @@
                     "module": "create-ca-cert",
                     "type": "bash",
                     "command": "scripts/aks/create-and-upload-ca-cert.sh ${workload.keyvault.name} ${workload.kubernetes.ca-cert-key-name} ${workload.kubernetes.ca-name}",
+                    "dependencies": [
+                        "scripts-pre-reqs"
+                    ]
+                },
+                {	
+                    "module": "create-cluster-rbac-role-bindings",
+                    "type": "bash",
+                    "command": "scripts/aks/create-cluster-rbac-role-bindings.sh ${workload.kubernetes.cluster-name} ${workload.kubernetes.cluster-resource-group-name} 558eed0b-9358-483a-813c-aa7fc19b8f94 f8016c94-5774-4d07-910c-65bdc4d1412d Y Y",
                     "dependencies": [
                         "scripts-pre-reqs"
                     ]
