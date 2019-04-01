@@ -7,6 +7,13 @@
             "metadata": {
                 "description": "Array of Role Assignment Information"
             }
+        },
+        "scope": {
+            "type": "string",
+            "defaultValue": "none",
+            "metadata": {
+                "description": "Array of Role Assignment Information"
+            }
         }
     },
     "variables": {
@@ -23,7 +30,7 @@
             "properties": {
               "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('ra-role-assignments')[copyIndex()].roleDefinitionId)]",
               "principalId": "[parameters('ra-role-assignments')[copyIndex()].principalId]",
-              "scope": "[parameters('ra-role-assignments')[copyIndex()].scope]"
+              "scope": "[if(equals(parameters('scope'), 'none'), parameters('ra-role-assignments')[copyIndex()].scope, parameters('scope'))]"
             }
         }
     ],

@@ -1,5 +1,0 @@
-{
-    "ra-role-assignments": {
-        "value": "${workload.kubernetes.rbac}"
-    }
-}
