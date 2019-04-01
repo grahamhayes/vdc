@@ -41,7 +41,7 @@
             "then": {
                 "effect": "auditIfNotExists",
                 "details": {
-                "type": "Microsoft.Authorization/roleDefinitions",
+                "type": "Microsoft.Authorization/roleAssignments",
                 "existenceCondition": {
                       "allOf": [
                         {
@@ -67,7 +67,7 @@
             "then": {
                 "effect": "auditIfNotExists",
                 "details": {
-                "type": "Microsoft.Authorization/roleDefinitions",
+                "type": "Microsoft.Authorization/roleAssignments",
                 "existenceCondition": {
                       "allOf": [
                         {
@@ -93,7 +93,7 @@
             "then": {
                 "effect": "auditIfNotExists",
                 "details": {
-                "type": "Microsoft.Authorization/roleDefinitions",
+                "type": "Microsoft.Authorization/roleAssignments",
                 "existenceCondition": {
                       "allOf": [
                         {
