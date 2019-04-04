@@ -365,9 +365,13 @@
         }
     ],
     "outputs": {
-        "scope": {
+        "rgId": {
             "type": "string",
             "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup)]"
+        },
+        "rgName": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup]"
         },
         "controlPlaneFQDN": {
             "type": "string",
