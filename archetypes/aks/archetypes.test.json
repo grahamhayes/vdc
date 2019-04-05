@@ -93,43 +93,43 @@
                         "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-admin-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Admin",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - NOC user",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.noc-user-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Devs",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.dev-user-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Reader Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Reader Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.dev-user-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     },
                     {
                         "comments": "Reader Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.noc-user-group-id}",
-                        "scope": "resourceGroup"
+                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
                     }
                 ],
                 "aks-node-rbac": [

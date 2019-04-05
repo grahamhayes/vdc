@@ -28,7 +28,8 @@ class ResourceManagementClientSdk(object):
         template: dict, 
         parameters: dict,
         resource_group_name: str,
-        deployment_name: str):
+        deployment_name: str,
+        location: str):
         """Function that executes the resource deployment
 
         :param mode: Deployment mode
@@ -57,12 +58,13 @@ class ResourceManagementClientSdk(object):
 
             if '$schema' in template and \
                 'subscriptionDeploymentTemplate.json' in template['$schema']:
-                    deployment_async_operation = \
+                deployment_async_operation = \
                     self._resource_management_client\
                         .deployments\
                         .create_or_update_at_subscription_scope(
                             deployment_name,
-                            deployment_properties)
+                            deployment_properties, 
+                            location)
             else:
                 deployment_async_operation = \
                     self._resource_management_client\
