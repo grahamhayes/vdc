@@ -1,13 +1,13 @@
 {
     "general": {
-        "organization-name": "org",
-        "tenant-id": "00000000-0000-0000-0000-000000000000",
-        "deployment-user-id": "00000000-0000-0000-0000-000000000000",
-        "vdc-storage-account-name": "storage",
+        "organization-name": "kn",
+        "tenant-id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "deployment-user-id": "4759d4e3-0aed-46cb-bfe0-64023c051bd5",
+        "vdc-storage-account-name": "knvdcstorage",
         "vdc-storage-account-rg": "vdc-storage-rg",
         "on-premises": {
             "deployment-name": "onprem",
-            "subscription-id": "00000000-0000-0000-0000-000000000000",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
             "region": "West US 2",
             "network": {
                 "address-prefix": "192.168.1.0/28"
@@ -19,7 +19,7 @@
         },
         "shared-services": {
             "deployment-name": "ssvcs",
-            "subscription-id": "00000000-0000-0000-0000-000000000000",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
             "region": "West US 2",
             "vm-configuration": {
                 "local-admin-user": "admin-user",
@@ -51,7 +51,7 @@
         },
         "workload": {
             "deployment-name": "aks",
-            "subscription-id": "00000000-0000-0000-0000-000000000000",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
             "region": "West US 2",
             "keyvault": {
                 "secrets": [
@@ -73,21 +73,26 @@
                 "os-disk-size-gb": 60,
                 "agent-count": 2,
                 "agent-vm-size": "Standard_DS3_v2",
+
                 "enable-rbac": true,
                 "enable-http-application-routing": false,
                 "enable-oms-agent": true,
-                "service-principal-client-id": "00000000-0000-0000-0000-000000000000",
-                "service-principal-client-secret": "00000000-0000-0000-0000-000000000000",
-                "rbac-server-appid": "00000000-0000-0000-0000-000000000000",
-                "rbac-server-secret": "",
-                "rbac-client-appid": "00000000-0000-0000-0000-000000000000",
-                "rbac-tenant": "00000000-0000-0000-0000-000000000000",
+
+                "service-principal-client-id":"c900d827-3f83-4ca6-b6c6-a861e2aa3796",
+                "service-principal-client-secret":"P@ssword123",
+                "rbac-server-appid": "6b85ca02-521f-49da-ae67-6882c98a3dd0",
+                "rbac-server-secret": "mlCHR45pr8y/YVIcH57Ni75tIgWZ/ZiehKy4DijvzPg=",
+                "rbac-client-appid": "5b94cf88-0a30-4bcf-bdc7-ee403290ffc6",
+                "rbac-tenant":"068ad735-3223-4ff6-9ffb-a9924821aad2",
+
                 "aks-cluster-admin-rbac-role-id": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
                 "aks-cluster-user-rbac-role-id": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                 "reader-rbac-role-id": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-                "cluster-admin-group-id": "00000000-0000-0000-0000-000000000000",
-                "noc-user-group-id": "00000000-0000-0000-0000-000000000000",
-                "dev-user-group-id": "00000000-0000-0000-0000-000000000000",
+
+                "cluster-admin-group-id": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+                "noc-user-group-id": "6f55a76f-29d7-468e-989e-bb18332deda7",
+                "dev-user-group-id": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+
                 "aks-cluster-rbac": [
                     {
                         "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
@@ -159,46 +164,14 @@
                 "sku": "Standard"
             },
             "diagnostics": {
-                "storage": {},
+                "storage": {
+                },
                 "event-hub": {
                     "sku": "Standard"
                 }
             },
             "network": {
-                "enable-ddos-protection": false,
-                "azure-firewall-application-rule-collection": [
-                    {
-                        "name": "aks-cluster-01",
-                        "properties": {
-                            "priority": 120,
-                            "action": {
-                                "type": "Allow"
-                            },
-                            "rules": [
-                                {
-                                    "name": "cluster",
-                                    "protocols": [
-                                        {
-                                            "protocolType": "Http",
-                                            "port": 80
-                                        },
-                                        {
-                                            "protocolType": "Https",
-                                            "port": 443
-                                        }
-                                    ],
-                                    "fqdnTags": [],
-                                    "targetFqdns": [
-                                        "*"
-                                    ],
-                                    "sourceAddresses": [
-                                        "${workload.network.subnets[0].address-prefix}"
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
+                "enable-ddos-protection": true
             }
         }
     },
@@ -213,12 +186,14 @@
             "aks",
             "aks-cluster-role-assignments",
             "aks-node-role-assignments",
+            "role-assignments",
             "permissions-scripts-pre-reqs",
             "scripts-pre-reqs",
             "create-ca-cert",
             "create-cluster-rbac-role-bindings"
         ],
-        "module-validation-dependencies": [],
+        "module-validation-dependencies": [
+        ],
         "module-configuration": {
             "import-modules": "file(modules)",
             "custom-scripts": "file(scripts)",
@@ -318,7 +293,7 @@
                     "dependencies": [
                         "aks"
                     ]
-                },
+                }, 
                 {
                     "module": "scripts-pre-reqs",
                     "type": "bash",
@@ -326,7 +301,7 @@
                     "dependencies": [
                         "aks"
                     ]
-                },
+                }, 
                 {
                     "module": "create-ca-cert",
                     "type": "bash",
@@ -335,7 +310,7 @@
                         "scripts-pre-reqs"
                     ]
                 },
-                {
+                {	
                     "module": "create-cluster-rbac-role-bindings",
                     "type": "bash",
                     "command": "scripts/aks/create-cluster-rbac-role-bindings.sh ${workload.kubernetes.cluster-name} ${workload.kubernetes.cluster-resource-group-name} 558eed0b-9358-483a-813c-aa7fc19b8f94 f8016c94-5774-4d07-910c-65bdc4d1412d Y Y",
@@ -383,10 +358,10 @@
                 "gateway-udr-name": "${general.organization-name}-${general.shared-services.deployment-name}-gw-udr"
             },
             "network-virtual-appliance": {
-                "egress-ip": "10.4.1.4",
+                "egress-ip": "10.4.1.4", 
                 "azure-firewall": {
                     "name": "${general.organization-name}-${general.shared-services.deployment-name}-az-fw"
-                },
+                },                   
                 "custom-ubuntu": {
                     "egress": {
                         "ip": "10.4.0.20",
@@ -414,7 +389,6 @@
             "enable-ddos-protection": "${general.workload.network.enable-ddos-protection}",
             "address-prefix": "10.2.0.0/16",
             "application-security-groups": [],
-            "azure-firewall-application-rule-collection": "${general.workload.network.azure-firewall-application-rule-collection}",
             "network-security-groups": [
                 {
                     "name": "default",
@@ -426,15 +400,15 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "22",
-                                "destinationPortRanges": [],
+                                "destinationPortRanges":[],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 100,
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
-                                "sourceAddressPrefix": "${shared-services.network.address-prefix}",
-                                "sourceApplicationSecurityGroups": []
+                                "sourceAddressPrefix": "VirtualNetwork",
+                                "sourceApplicationSecurityGroups":[]
                             }
                         },
                         {
@@ -444,7 +418,7 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "80",
-                                "destinationPortRanges": [],
+                                "destinationPortRanges":[],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 110,
@@ -452,7 +426,7 @@
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups": []
+                                "sourceApplicationSecurityGroups":[]
                             }
                         },
                         {
@@ -462,7 +436,7 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "443",
-                                "destinationPortRanges": [],
+                                "destinationPortRanges":[],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 120,
@@ -470,7 +444,7 @@
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups": []
+                                "sourceApplicationSecurityGroups":[]
                             }
                         },
                         {
@@ -480,15 +454,15 @@
                                 "destinationAddressPrefix": "*",
                                 "destinationAddressPrefixes": [],
                                 "destinationPortRange": "*",
-                                "destinationPortRanges": [],
-                                "destinationApplicationSecurityGroups": [],
+                                "destinationPortRanges":[],
+                                "destinationApplicationSecurityGroups":[],
                                 "direction": "Inbound",
                                 "priority": 4095,
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "Internet",
-                                "sourceApplicationSecurityGroups": []
+                                "sourceApplicationSecurityGroups":[]
                             }
                         },
                         {
@@ -498,15 +472,15 @@
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationAddressPrefixes": [],
                                 "destinationPortRange": "*",
-                                "destinationPortRanges": [],
-                                "destinationApplicationSecurityGroups": [],
+                                "destinationPortRanges":[],
+                                "destinationApplicationSecurityGroups":[],
                                 "direction": "Inbound",
                                 "priority": 4096,
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups": []
+                                "sourceApplicationSecurityGroups":[]
                             }
                         }
                     ]
@@ -559,25 +533,31 @@
             "os-type": "${general.workload.kubernetes.os-type}",
             "network-plugin": "${general.workload.kubernetes.network-plugin}",
             "max-pods": "${general.workload.kubernetes.max-pods}",
+
             "os-disk-size-gb": "${general.workload.kubernetes.os-disk-size-gb}",
             "agent-count": "${general.workload.kubernetes.agent-count}",
             "agent-vm-size": "${general.workload.kubernetes.agent-vm-size}",
+
             "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
             "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
             "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}",
+            
             "aks-cluster-rbac": "${general.workload.kubernetes.aks-cluster-rbac}",
             "aks-node-rbac": "${general.workload.kubernetes.aks-node-rbac}",
+            
             "ca-cert-key-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "ca-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "cluster-name": "${general.organization-name}-${general.workload.deployment-name}-k8s",
             "cluster-resource-group-name": "${general.organization-name}-${general.workload.deployment-name}-rg",
             "tiller-namespace": "${general.workload.kubernetes.tiller-namespace}",
-            "service-principal-client-id": "${general.workload.kubernetes.service-principal-client-id}",
-            "service-principal-client-secret": "${general.workload.kubernetes.service-principal-client-secret}",
+
+            "service-principal-client-id":"${general.workload.kubernetes.service-principal-client-id}",
+            "service-principal-client-secret":"${general.workload.kubernetes.service-principal-client-secret}",
             "rbac-server-appid": "${general.workload.kubernetes.rbac-server-appid}",
             "rbac-server-secret": "${general.workload.kubernetes.rbac-server-secret}",
             "rbac-client-appid": "${general.workload.kubernetes.rbac-client-appid}",
-            "rbac-tenant": "${general.workload.kubernetes.rbac-tenant}",
+            "rbac-tenant":"${general.workload.kubernetes.rbac-tenant}",
+
             "service-cidr": "10.0.0.0/16",
             "dns-service-ip": "10.0.0.10",
             "docker-bridge-cidr": "172.17.0.1/16"
