@@ -1,9 +1,9 @@
 {
     "general": {
-        "organization-name": "aksvdc",
+        "organization-name": "org",
         "tenant-id": "00000000-0000-0000-0000-000000000000",
         "deployment-user-id": "00000000-0000-0000-0000-000000000000",
-        "vdc-storage-account-name": "knvdcstorage",
+        "vdc-storage-account-name": "storage",
         "vdc-storage-account-rg": "vdc-storage-rg",
         "on-premises": {
             "deployment-name": "onprem",
@@ -165,7 +165,40 @@
                 }
             },
             "network": {
-                "enable-ddos-protection": true
+                "enable-ddos-protection": false,
+                "azure-firewall-application-rule-collection": [
+                    {
+                        "name": "aks-cluster-01",
+                        "properties": {
+                            "priority": 120,
+                            "action": {
+                                "type": "Allow"
+                            },
+                            "rules": [
+                                {
+                                    "name": "cluster",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Http",
+                                            "port": 80
+                                        },
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "*"
+                                    ],
+                                    "sourceAddresses": [
+                                        "${workload.network.subnets[0].address-prefix}"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
             }
         }
     },
@@ -381,6 +414,7 @@
             "enable-ddos-protection": "${general.workload.network.enable-ddos-protection}",
             "address-prefix": "10.2.0.0/16",
             "application-security-groups": [],
+            "azure-firewall-application-rule-collection": "${general.workload.network.azure-firewall-application-rule-collection}",
             "network-security-groups": [
                 {
                     "name": "default",
@@ -399,7 +433,7 @@
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
-                                "sourceAddressPrefix": "VirtualNetwork",
+                                "sourceAddressPrefix": "${shared-services.network.address-prefix}",
                                 "sourceApplicationSecurityGroups": []
                             }
                         },

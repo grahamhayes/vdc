@@ -169,6 +169,12 @@
             "metadata": {
                 "description": "RBAC tenant"
             }
+        },
+        "azure-firewall-application-rule-collection": {
+            "type": "array",
+            "metadata": {
+                "description": "Array containing AKS specific Azure Firewall application rule collections"
+            }
         }
     },
     "variables": {
@@ -183,41 +189,7 @@
             }
         },
         "azure-fw-resource-group": "[concat(parameters('shared-services-deployment-prefix'), '-net-rg')]",
-        "azure-fw-name": "[concat(parameters('shared-services-deployment-prefix'), '-az-fw')]",
-        "azure-fw-application-rule-collection": [
-            {
-                "name": "[concat('aks-traffic-', parameters('resource-name'))]",
-                "properties": {
-                    "provisioningState": "Succeeded",
-                    "priority": 120,
-                    "action": {
-                        "type": "Allow"
-                    },
-                    "rules": [
-                        {
-                            "name": "cluster",
-                            "protocols": [
-                                {
-                                    "protocolType": "Http",
-                                    "port": 80
-                                },
-                                {
-                                    "protocolType": "Https",
-                                    "port": 443
-                                }
-                            ],
-                            "fqdnTags": [],
-                            "targetFqdns": [
-                                "*"
-                            ],
-                            "sourceAddresses": [
-                                "10.2.0.0/17"
-                            ]
-                        }
-                    ]
-                }
-            }
-        ]
+        "azure-fw-name": "[concat(parameters('shared-services-deployment-prefix'), '-az-fw')]"
     },
     "resources": [
         {
@@ -244,7 +216,7 @@
                         "ipConfigurations": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').ipConfigurations]",
                         "networkRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections]",
                         "natRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').natRuleCollections]",
-						"applicationRuleCollections": "[concat(reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, variables('azure-fw-application-rule-collection'))]"
+						"applicationRuleCollections": "[concat(reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, parameters('azure-firewall-application-rule-collection'))]"
                     }
                   }
                 ]
