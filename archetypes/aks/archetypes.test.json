@@ -212,7 +212,6 @@
             "acr",
             "aks",
             "aks-cluster-role-assignments",
-            "aks-node-role-assignments",
             "permissions-scripts-pre-reqs",
             "scripts-pre-reqs",
             "create-ca-cert",
@@ -286,18 +285,6 @@
                         "parameters-path": "file(modules/aks/1.0/azureDeploy.aks.cluster.roleAssignment.parameters.json)"
                     },
                     "dependencies": []
-                },
-                {
-                    "module": "aks-node-role-assignments",
-                    "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
-                    "source": {
-                        "version": "1.0",
-                        "template-path": "file(modules/role-assignments/1.0/azureDeploy.json)",
-                        "parameters-path": "file(modules/aks/1.0/azureDeploy.aks.node.roleAssignment.parameters.json)"
-                    },
-                    "dependencies": [
-                        "aks"
-                    ]
                 },
                 {
                     "module": "aks",

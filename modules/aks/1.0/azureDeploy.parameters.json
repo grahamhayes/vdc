@@ -70,5 +70,8 @@
     },
     "azure-firewall-application-rule-collection": {
         "value": "${workload.network.azure-firewall-application-rule-collection}"
+    },
+    "role-assignments": {
+        "value": "${workload.kubernetes.aks-node-rbac}"
     }
 }
