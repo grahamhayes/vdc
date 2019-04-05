@@ -365,7 +365,7 @@
         }
     ],
     "outputs": {
-        "rgId": {
+        "scope": {
             "type": "string",
             "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup)]"
         },

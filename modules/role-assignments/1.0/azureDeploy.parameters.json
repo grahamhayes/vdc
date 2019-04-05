@@ -5,5 +5,4 @@
     "aks-infra-role-assignments": {
         "value": "${workload.kubernetes.aks-infra-rbac}"
     }
-
 }

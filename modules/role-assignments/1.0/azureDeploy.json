@@ -2,79 +2,34 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "aks-role-assignments": {
+        "role-assignments": {
             "type": "array",
             "metadata": {
-                "description": "Array of Role Assignments for AKS resource group"
+                "description": "Array of Role Assignments based on archetype format"
             }
         },
-        "aks-infra-role-assignments": {
-            "type": "array",
-            "metadata": {
-                "description": "Array of Role Assignment Information for AKS infra resource group"
-            }
-        },
-        "rgId": {
+        "scope": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
-                "description": "AKS Infra Resource group id from output of aks module"
-            }
-        },
-        "rgName": {
-            "type": "string",
-            "metadata": {
-                "description": "AKS Infra Resource group name captured from output of aks module"
+                "description": "If value is different than the defaultValue -> meaning that got passed from the parameters file, this value will override any scope passed in role-assignment array"
             }
         }
     },
     "variables": {},
     "resources": [
         {
-            "comments": "Role grants to the AKS resource group",
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2017-05-01",
             "copy": {
                 "name": "roleAssignmentLoop",
-                "count": "[length(parameters('aks-role-assignments'))]"
+                "count": "[length(parameters('role-assignments'))]"
             },
-            "name": "[guid(subscription().id, resourceGroup().id, parameters('aks-role-assignments')[copyIndex()].roleDefinitionId, parameters('aks-role-assignments')[copyIndex()].principalId)]",
+            "name": "[guid(subscription().id, resourceGroup().id, parameters('role-assignments')[copyIndex()].roleDefinitionId, parameters('role-assignments')[copyIndex()].principalId)]",
             "properties": {
-                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('aks-role-assignments')[copyIndex()].roleDefinitionId)]",
-                "principalId": "[parameters('aks-role-assignments')[copyIndex()].principalId]",
-                "scope": "[ResourceGroup().id]"
-            }
-        },
-        {
-            "comments": "Role grants to the AKS infrastructure resource group. We don't know the name until after the AKS deployment so we need a nested deployment to specify the target resource group",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2018-05-01",
-            "name": "[concat('assignRoleToAksInfra','-',copyIndex())]",
-            "resourceGroup": "[parameters('rgName')]",
-            "copy": {
-                "name": "infraRoleAssignmentLoop",
-                "count": "[length(parameters('aks-infra-role-assignments'))]"
-            },                
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid(subscription().id, parameters('rgName'), parameters('aks-infra-role-assignments')[copyIndex('infraRoleAssignmentLoop')].roleDefinitionId, parameters('aks-infra-role-assignments')[copyIndex('infraRoleAssignmentLoop')].principalId)]",
-                            "apiVersion": "2017-09-01",
-                            "properties": {
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('aks-infra-role-assignments')[copyIndex('infraRoleAssignmentLoop')].roleDefinitionId)]",
-                                "principalId": "[parameters('aks-infra-role-assignments')[copyIndex('infraRoleAssignmentLoop')].principalId]",
-                                "scope": "[parameters('rgId')]"
-                            }
-                        }
-                    ],
-                    "outputs": {}
-                }
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('role-assignments')[copyIndex()].roleDefinitionId)]",
+                "principalId": "[parameters('role-assignments')[copyIndex()].principalId]",
+                "scope": "[if(not(equals(parameters('scope'), '')), parameters('scope'), if(equals('resourcegroup', toLower(parameters('role-assignments')[copyIndex()].scope)), resourceGroup().id, if(equals('subscription', toLower(parameters('role-assignments')[copyIndex()].scope)), subscription().id, parameters('role-assignments')[copyIndex()].scope)))]"
             }
         }
     ],

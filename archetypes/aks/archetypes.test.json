@@ -73,79 +73,83 @@
                 "os-disk-size-gb": 60,
                 "agent-count": 2,
                 "agent-vm-size": "Standard_DS3_v2",
-
                 "enable-rbac": true,
                 "enable-http-application-routing": false,
                 "enable-oms-agent": true,
-
-                "service-principal-client-id":"00000000-0000-0000-0000-000000000000",
-                "service-principal-client-secret":"00000000-0000-0000-0000-000000000000",
+                "service-principal-client-id": "00000000-0000-0000-0000-000000000000",
+                "service-principal-client-secret": "00000000-0000-0000-0000-000000000000",
                 "rbac-server-appid": "00000000-0000-0000-0000-000000000000",
                 "rbac-server-secret": "",
                 "rbac-client-appid": "00000000-0000-0000-0000-000000000000",
-                "rbac-tenant":"00000000-0000-0000-0000-000000000000",
-
+                "rbac-tenant": "00000000-0000-0000-0000-000000000000",
                 "aks-cluster-admin-rbac-role-id": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
                 "aks-cluster-user-rbac-role-id": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                 "reader-rbac-role-id": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-
                 "cluster-admin-group-id": "00000000-0000-0000-0000-000000000000",
                 "noc-user-group-id": "00000000-0000-0000-0000-000000000000",
                 "dev-user-group-id": "00000000-0000-0000-0000-000000000000",
-
-                "aks-rbac": [
+                "aks-cluster-rbac": [
                     {
                         "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-admin-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
+                        "scope": "resourceGroup"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Admin",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
+                        "scope": "resourceGroup"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - NOC user",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.noc-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.noc-user-group-id}",
+                        "scope": "resourceGroup"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Devs",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.dev-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.dev-user-group-id}",
+                        "scope": "resourceGroup"
                     },
-
                     {
                         "comments": "Reader Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
+                        "scope": "resourceGroup"
                     },
                     {
                         "comments": "Reader Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.dev-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.dev-user-group-id}",
+                        "scope": "resourceGroup"
                     },
                     {
                         "comments": "Reader Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.noc-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.noc-user-group-id}",
+                        "scope": "resourceGroup"
                     }
                 ],
-                "aks-infra-rbac": [
+                "aks-node-rbac": [
                     {
                         "comments": "Reader Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
+                        "scope": ""
                     },
                     {
                         "comments": "Reader Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.dev-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.dev-user-group-id}",
+                        "scope": ""
                     },
                     {
                         "comments": "Reader Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
-                        "principalId": "${general.workload.kubernetes.noc-user-group-id}"
+                        "principalId": "${general.workload.kubernetes.noc-user-group-id}",
+                        "scope": ""
                     }
                 ],
                 "tiller-namespace": "tiller"
@@ -155,8 +159,7 @@
                 "sku": "Standard"
             },
             "diagnostics": {
-                "storage": {
-                },
+                "storage": {},
                 "event-hub": {
                     "sku": "Standard"
                 }
@@ -175,14 +178,14 @@
             "kv",
             "acr",
             "aks",
-            "role-assignments",
+            "aks-cluster-role-assignments",
+            "aks-node-role-assignments",
             "permissions-scripts-pre-reqs",
             "scripts-pre-reqs",
             "create-ca-cert",
             "create-cluster-rbac-role-bindings"
         ],
-        "module-validation-dependencies": [
-        ],
+        "module-validation-dependencies": [],
         "module-configuration": {
             "import-modules": "file(modules)",
             "custom-scripts": "file(scripts)",
@@ -242,12 +245,24 @@
                     "dependencies": []
                 },
                 {
-                    "module": "role-assignments",
+                    "module": "aks-cluster-role-assignments",
                     "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
                     "source": {
-                        "version": "1.0"
+                        "version": "1.0",
+                        "parameters-path": "file(modules/aks/1.0/azureDeploy.aks.cluster.roleAssignment.parameters.json)"
                     },
-                    "dependencies": ["aks"]
+                    "dependencies": []
+                },
+                {
+                    "module": "aks-node-role-assignments",
+                    "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
+                    "source": {
+                        "version": "1.0",
+                        "parameters-path": "file(modules/aks/1.0/azureDeploy.aks.node.roleAssignment.parameters.json)"
+                    },
+                    "dependencies": [
+                        "aks"
+                    ]
                 },
                 {
                     "module": "aks",
@@ -268,7 +283,7 @@
                     "dependencies": [
                         "aks"
                     ]
-                }, 
+                },
                 {
                     "module": "scripts-pre-reqs",
                     "type": "bash",
@@ -276,7 +291,7 @@
                     "dependencies": [
                         "aks"
                     ]
-                }, 
+                },
                 {
                     "module": "create-ca-cert",
                     "type": "bash",
@@ -285,7 +300,7 @@
                         "scripts-pre-reqs"
                     ]
                 },
-                {	
+                {
                     "module": "create-cluster-rbac-role-bindings",
                     "type": "bash",
                     "command": "scripts/aks/create-cluster-rbac-role-bindings.sh ${workload.kubernetes.cluster-name} ${workload.kubernetes.cluster-resource-group-name} 558eed0b-9358-483a-813c-aa7fc19b8f94 f8016c94-5774-4d07-910c-65bdc4d1412d Y Y",
@@ -333,10 +348,10 @@
                 "gateway-udr-name": "${general.organization-name}-${general.shared-services.deployment-name}-gw-udr"
             },
             "network-virtual-appliance": {
-                "egress-ip": "10.4.1.4", 
+                "egress-ip": "10.4.1.4",
                 "azure-firewall": {
                     "name": "${general.organization-name}-${general.shared-services.deployment-name}-az-fw"
-                },                   
+                },
                 "custom-ubuntu": {
                     "egress": {
                         "ip": "10.4.0.20",
@@ -375,7 +390,7 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "22",
-                                "destinationPortRanges":[],
+                                "destinationPortRanges": [],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 100,
@@ -383,7 +398,7 @@
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups":[]
+                                "sourceApplicationSecurityGroups": []
                             }
                         },
                         {
@@ -393,7 +408,7 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "80",
-                                "destinationPortRanges":[],
+                                "destinationPortRanges": [],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 110,
@@ -401,7 +416,7 @@
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups":[]
+                                "sourceApplicationSecurityGroups": []
                             }
                         },
                         {
@@ -411,7 +426,7 @@
                                 "destinationAddressPrefixes": [],
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationPortRange": "443",
-                                "destinationPortRanges":[],
+                                "destinationPortRanges": [],
                                 "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 120,
@@ -419,7 +434,7 @@
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups":[]
+                                "sourceApplicationSecurityGroups": []
                             }
                         },
                         {
@@ -429,15 +444,15 @@
                                 "destinationAddressPrefix": "*",
                                 "destinationAddressPrefixes": [],
                                 "destinationPortRange": "*",
-                                "destinationPortRanges":[],
-                                "destinationApplicationSecurityGroups":[],
+                                "destinationPortRanges": [],
+                                "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 4095,
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "Internet",
-                                "sourceApplicationSecurityGroups":[]
+                                "sourceApplicationSecurityGroups": []
                             }
                         },
                         {
@@ -447,15 +462,15 @@
                                 "destinationAddressPrefix": "VirtualNetwork",
                                 "destinationAddressPrefixes": [],
                                 "destinationPortRange": "*",
-                                "destinationPortRanges":[],
-                                "destinationApplicationSecurityGroups":[],
+                                "destinationPortRanges": [],
+                                "destinationApplicationSecurityGroups": [],
                                 "direction": "Inbound",
                                 "priority": 4096,
                                 "protocol": "Tcp",
                                 "sourcePortRange": "*",
                                 "sourcePortRanges": [],
                                 "sourceAddressPrefix": "VirtualNetwork",
-                                "sourceApplicationSecurityGroups":[]
+                                "sourceApplicationSecurityGroups": []
                             }
                         }
                     ]
@@ -508,31 +523,25 @@
             "os-type": "${general.workload.kubernetes.os-type}",
             "network-plugin": "${general.workload.kubernetes.network-plugin}",
             "max-pods": "${general.workload.kubernetes.max-pods}",
-
             "os-disk-size-gb": "${general.workload.kubernetes.os-disk-size-gb}",
             "agent-count": "${general.workload.kubernetes.agent-count}",
             "agent-vm-size": "${general.workload.kubernetes.agent-vm-size}",
-
             "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
             "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
             "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}",
-            
             "aks-rbac": "${general.workload.kubernetes.aks-rbac}",
             "aks-infra-rbac": "${general.workload.kubernetes.aks-infra-rbac}",
-            
             "ca-cert-key-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "ca-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "cluster-name": "${general.organization-name}-${general.workload.deployment-name}-k8s",
             "cluster-resource-group-name": "${general.organization-name}-${general.workload.deployment-name}-rg",
             "tiller-namespace": "${general.workload.kubernetes.tiller-namespace}",
-
-            "service-principal-client-id":"${general.workload.kubernetes.service-principal-client-id}",
-            "service-principal-client-secret":"${general.workload.kubernetes.service-principal-client-secret}",
+            "service-principal-client-id": "${general.workload.kubernetes.service-principal-client-id}",
+            "service-principal-client-secret": "${general.workload.kubernetes.service-principal-client-secret}",
             "rbac-server-appid": "${general.workload.kubernetes.rbac-server-appid}",
             "rbac-server-secret": "${general.workload.kubernetes.rbac-server-secret}",
             "rbac-client-appid": "${general.workload.kubernetes.rbac-client-appid}",
-            "rbac-tenant":"${general.workload.kubernetes.rbac-tenant}",
-
+            "rbac-tenant": "${general.workload.kubernetes.rbac-tenant}",
             "service-cidr": "10.0.0.0/16",
             "dns-service-ip": "10.0.0.10",
             "docker-bridge-cidr": "172.17.0.1/16"
