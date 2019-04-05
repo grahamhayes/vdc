@@ -67,5 +67,8 @@
     },
     "docker-bridge-cidr": {
         "value": "${workload.kubernetes.docker-bridge-cidr}"
+    },
+    "azure-firewall-application-rule-collection": {
+        "value": "${workload.network.azure-firewall-application-rule-collection}"
     }
 }
