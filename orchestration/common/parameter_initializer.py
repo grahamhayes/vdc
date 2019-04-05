@@ -274,7 +274,8 @@ class ParameterInitializer(object):
                 client_id=self._client_id, 
                 secret=self._secret, 
                 tenant_id=self._tenant_id,
-                subscription_id=self._subscription_id)
+                subscription_id=self._subscription_id,
+                api_version='2018-05-01')
 
         self._management_lock_integration_service = \
             object_factory.integration_factory(
@@ -361,13 +362,13 @@ class ParameterInitializer(object):
 
         # Let's analyze if shared_services or workload parameters exist
         if environment_type not in self._json_parameters:
-            raise ValueError("{} being deployed, {} property must exist".format(
+            raise ValueError("{} is being deployed, {} property must exist".format(
                 environment_type,
                 environment_type
             ))
         
         # Let's analyze the location
-        if 'region' not in self._json_parameters[environment_type]:  
+        if 'region' not in self._json_parameters['general'][environment_type]:  
             raise ValueError('No region has been set')
 
         # Let's analyze the subscription id 
