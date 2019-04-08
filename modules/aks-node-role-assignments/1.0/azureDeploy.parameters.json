@@ -1,6 +1,6 @@
 {
     "aks-node-role-assignments": {
-        "value": "${workload.kubernetes.rbac.aks-node-resource-group-assignments}"
+        "value": "${workload.rbac.aks-node-resource-group-assignments}"
     }
 
 }

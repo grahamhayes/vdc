@@ -26,22 +26,6 @@
                 "enable-encryption": false,
                 "encryption-keys-for": []
             },
-            "keyvault": {
-                "secrets": [
-                    {
-                        "secretName": "${general.shared-services.vm-configuration.local-admin-user}",
-                        "secretValue": ""
-                    },
-                    {
-                        "secretName": "self-certificate-base64",
-                        "secretValue": ""
-                    },
-                    {
-                        "secretName": "self-certificate-password",
-                        "secretValue": ""
-                    }
-                ]
-            },
             "log-analytics": {
                 "region": "West US 2"
             },
@@ -54,16 +38,7 @@
             "subscription-id": "00000000-0000-0000-0000-000000000000",
             "region": "West US 2",
             "keyvault": {
-                "secrets": [
-                    {
-                        "secretName": "self-certificate-base64",
-                        "secretValue": ""
-                    },
-                    {
-                        "secretName": "self-certificate-password",
-                        "secretValue": ""
-                    }
-                ]
+                "secrets": []
             },
             "kubernetes": {
                 "kubernetes-version": "1.12.6",
@@ -341,7 +316,6 @@
         "log-analytics": {
             "region": "${general.shared-services.log-analytics.region}"
         },
-        "keyvault": "${general.shared-services.keyvault}",
         "network": {
             "resource-group-name": "${general.organization-name}-${general.shared-services.deployment-name}-net-rg",
             "name": "${general.organization-name}-${general.shared-services.deployment-name}-vnet",
@@ -381,11 +355,30 @@
             "enable-ddos-protection": "${general.workload.network.enable-ddos-protection}",
             "address-prefix": "10.2.0.0/16",
             "application-security-groups": [],
+            "azure-firewall-network-rule-collection": "${general.workload.network.azure-firewall-network-rule-collection}",
             "azure-firewall-application-rule-collection": "${general.workload.network.azure-firewall-application-rule-collection}",
             "network-security-groups": [
                 {
                     "name": "default",
                     "rules": [
+                        {
+                            "name": "allow-azure-loadbalancer",
+                            "properties": {
+                                "access": "Allow",
+                                "destinationAddressPrefixes": [],
+                                "destinationAddressPrefix": "VirtualNetwork",
+                                "destinationPortRange": "*",
+                                "destinationPortRanges":[],
+                                "destinationApplicationSecurityGroups": [],
+                                "direction": "Inbound",
+                                "priority": 100,
+                                "protocol": "*",
+                                "sourcePortRange": "*",
+                                "sourcePortRanges": [],
+                                "sourceAddressPrefix": "AzureLoadBalancer",
+                                "sourceApplicationSecurityGroups":[]
+                            }
+                        },
                         {
                             "name": "allow-ssh",
                             "properties": {

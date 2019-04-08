@@ -196,7 +196,7 @@
         },
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
-            "name": "[if(equals(length(parameters('secrets-object').secrets), 0), 'dummy', concat(variables('key-vault-name'), '/', parameters('secrets-object').secrets[copyIndex()].secretName))]",
+            "name": "[if(equals(length(parameters('secrets-object').secrets), 0), concat(variables('key-vault-name'), '/', 'dummy'), concat(variables('key-vault-name'), '/', parameters('secrets-object').secrets[copyIndex()].secretName))]",
             "apiVersion": "2015-06-01",
             "condition": "[if(equals(length(parameters('secrets-object').secrets), 0), bool('false'), bool('true'))]",
             "copy": {
