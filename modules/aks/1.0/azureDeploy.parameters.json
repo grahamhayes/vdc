@@ -5,9 +5,6 @@
     "shared-services-deployment-prefix": {
         "value": "${general.organization-name}-${shared-services.deployment-name}"
     },
-    "resource-name": {
-        "value": "${workload.resource-group-prefix}-k8s"
-    },
     "resource-group-id": {
         "value": "[resourceGroup().id]"
     },
@@ -71,7 +68,7 @@
     "azure-firewall-application-rule-collection": {
         "value": "${workload.network.azure-firewall-application-rule-collection}"
     },
-    "role-assignments": {
-        "value": "${workload.kubernetes.aks-node-rbac}"
+    "subscription-id": {
+        "value": "${workload.subscription-id}"
     }
 }

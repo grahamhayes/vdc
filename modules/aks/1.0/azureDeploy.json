@@ -2,16 +2,16 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "deployment-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment prefix. E.g. Organization-DeploymentType"
+            }
+        },
         "shared-services-deployment-prefix": {
             "type": "string",
             "metadata": {
                 "description": "Deployment prefix for Shared Services. E.g. Organization-DeploymentType"
-            }
-        },
-        "resource-name": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Managed Cluster resource."
             }
         },
         "location": {
@@ -176,15 +176,16 @@
                 "description": "Array containing AKS specific Azure Firewall application rule collections"
             }
         },
-        "role-assignments": {
-            "type": "array",
+        "subscription-id": {
+            "type": "string",
             "metadata": {
-                "description": "Array of Role Assignments based on archetype format"
+                "description": "AKS Cluster deployment Subcription Id"
             }
         }
     },
     "variables": {
         "auth-rule-resource-id": "[parameters('diagnostics-event-hub-auth-rule-id')]",
+        "aks-cluster-name": "[concat(parameters('deployment-prefix'), '-k8s')]",
         "emptyContent": {},
         "omsAgentConfig": {
             "omsagent": {
@@ -203,7 +204,7 @@
             "name": "nestedDeployCreateAzureApplicationRules",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[concat(parameters('shared-services-deployment-prefix'),'-net-rg')]",
-            "subscriptionId": "[subscription().subscriptionId]",
+            "subscriptionId": "[parameters('subscription-id')]",
             "dependsOn": [],
             "properties": {
               "mode": "Incremental",
@@ -219,10 +220,10 @@
                     "location": "[resourceGroup().location]",
                     "name": "[variables('azure-fw-name')]",
                     "properties": {
-                        "ipConfigurations": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').ipConfigurations]",
-                        "networkRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections]",
-                        "natRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').natRuleCollections]",
-						"applicationRuleCollections": "[concat(reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, parameters('azure-firewall-application-rule-collection'))]"
+                        "ipConfigurations": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').ipConfigurations]",
+                        "networkRuleCollections": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections]",
+                        "natRuleCollections": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').natRuleCollections]",
+						"applicationRuleCollections": "[concat(reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, parameters('azure-firewall-application-rule-collection'))]"
                     }
                   }
                 ]
@@ -231,10 +232,12 @@
         },
         {
             "type": "Microsoft.ContainerService/managedClusters",
-            "name": "[parameters('resource-name')]",
+            "name": "[variables('aks-cluster-name')]",
             "apiVersion": "2018-03-31",
             "location": "[parameters('location')]",
-            "tags": {},
+            "tags": {
+                "displayName": "[concat(variables('aks-cluster-name'))]"
+              },
             "properties": {
                 "kubernetesVersion": "[parameters('kubernetes-version')]",
                 "enableRBAC": "[parameters('enable-rbac')]",
@@ -272,9 +275,9 @@
             "resources": [
                 {
                     "type": "Microsoft.ContainerService/managedClusters/providers/diagnosticSettings",
-                    "name": "[concat(parameters('resource-name'), '/Microsoft.Insights/service')]",
+                    "name": "[concat(variables('aks-cluster-name'), '/Microsoft.Insights/service')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.ContainerService/managedClusters', parameters('resource-name'))]"
+                        "[resourceId('Microsoft.ContainerService/managedClusters', variables('aks-cluster-name'))]"
                     ],
                     "apiVersion": "2017-05-01-preview",
                     "properties": {
@@ -340,53 +343,20 @@
             "dependsOn": [
                 "nestedDeployCreateAzureApplicationRules"
             ]
-        },
-        {
-            "name": "[concat('aks-node-rbac-assignment', copyIndex(1))]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2016-09-01",
-            "resourceGroup": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup]",
-            "dependsOn": [
-                "[parameters('resource-name')]"
-            ],
-            "copy": {
-                "name": "rbacLoop",
-                "count": "[parameters('role-assignments')]"
-            },
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Authorization/roleAssignments",
-                            "apiVersion": "2017-05-01",
-                            "name": "[guid(subscription().id, resourceGroup().id, parameters('role-assignments')[copyIndex()].roleDefinitionId, parameters('role-assignments')[copyIndex()].principalId)]",
-                            "properties": {
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('role-assignments')[copyIndex()].roleDefinitionId)]",
-                                "principalId": "[parameters('role-assignments')[copyIndex()].principalId]",
-                                "scope": "[resourceGroup().id]"
-                            }
-                        }
-                    ]
-                }
-            }
         }
     ],
     "outputs": {
-        "scope": {
+        "rgId": {
             "type": "string",
-            "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup)]"
+            "value": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/', reference(concat('Microsoft.ContainerService/managedClusters/', variables('aks-cluster-name'))).nodeResourceGroup)]"
         },
         "rgName": {
             "type": "string",
-            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).nodeResourceGroup]"
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', variables('aks-cluster-name'))).nodeResourceGroup]"
         },
         "controlPlaneFQDN": {
             "type": "string",
-            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).fqdn]"
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', variables('aks-cluster-name'))).fqdn]"
         },
         "NamespaceConnectionString": {
             "type": "string",
