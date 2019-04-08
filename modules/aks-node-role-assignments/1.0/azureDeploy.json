@@ -8,13 +8,13 @@
                 "description": "Array of Role Assignment Information for AKS infra resource group"
             }
         },
-        "rgId": {
+        "resource-group-id": {
             "type": "string",
             "metadata": {
                 "description": "AKS Infra Resource group id from output of aks module"
             }
         },
-        "rgName": {
+        "resource-group-name": {
             "type": "string",
             "metadata": {
                 "description": "AKS Infra Resource group name captured from output of aks module"
@@ -28,7 +28,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[concat('assignRoleToAksInfra','-',copyIndex())]",
-            "resourceGroup": "[parameters('rgName')]",
+            "resourceGroup": "[parameters('resource-group-name')]",
             "copy": {
                 "name": "infraRoleAssignmentLoop",
                 "count": "[length(parameters('aks-node-role-assignments'))]"
@@ -43,12 +43,12 @@
                     "resources": [
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
-                            "name": "[guid(subscription().id, parameters('rgName'), parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].roleDefinitionId, parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].principalId)]",
+                            "name": "[guid(subscription().id, parameters('resource-group-name'), parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].roleDefinitionId, parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].principalId)]",
                             "apiVersion": "2017-09-01",
                             "properties": {
                                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].roleDefinitionId)]",
                                 "principalId": "[parameters('aks-node-role-assignments')[copyIndex('infraRoleAssignmentLoop')].principalId]",
-                                "scope": "[parameters('rgId')]"
+                                "scope": "[parameters('resource-group-id')]"
                             }
                         }
                     ],

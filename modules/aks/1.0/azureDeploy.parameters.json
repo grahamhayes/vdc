@@ -68,6 +68,9 @@
     "azure-firewall-application-rule-collection": {
         "value": "${workload.network.azure-firewall-application-rule-collection}"
     },
+    "azure-firewall-network-rule-collection": {
+        "value": "${workload.network.azure-firewall-network-rule-collection}"
+    },
     "subscription-id": {
         "value": "${workload.subscription-id}"
     }

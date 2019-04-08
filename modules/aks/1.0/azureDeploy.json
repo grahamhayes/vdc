@@ -176,6 +176,12 @@
                 "description": "Array containing AKS specific Azure Firewall application rule collections"
             }
         },
+        "azure-firewall-network-rule-collection": {
+            "type": "array",
+            "metadata": {
+                "description": "Array containing AKS specific Azure Firewall network rule collections"
+            }
+        },
         "subscription-id": {
             "type": "string",
             "metadata": {
@@ -221,9 +227,9 @@
                     "name": "[variables('azure-fw-name')]",
                     "properties": {
                         "ipConfigurations": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').ipConfigurations]",
-                        "networkRuleCollections": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections]",
                         "natRuleCollections": "[reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').natRuleCollections]",
-						"applicationRuleCollections": "[concat(reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, parameters('azure-firewall-application-rule-collection'))]"
+                        "applicationRuleCollections": "[concat(reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, parameters('azure-firewall-application-rule-collection'))]",
+                        "networkRuleCollections": "[concat(reference(resourceId(parameters('subscription-id'), variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections, parameters('azure-firewall-network-rule-collection'))]"
                     }
                   }
                 ]
@@ -346,11 +352,11 @@
         }
     ],
     "outputs": {
-        "rgId": {
+        "resource-group-id": {
             "type": "string",
             "value": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/', reference(concat('Microsoft.ContainerService/managedClusters/', variables('aks-cluster-name'))).nodeResourceGroup)]"
         },
-        "rgName": {
+        "resource-group-name": {
             "type": "string",
             "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', variables('aks-cluster-name'))).nodeResourceGroup]"
         },

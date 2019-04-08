@@ -1,5 +1,0 @@
-{
-    "aks-cluster-role-assignments": {
-        "value": "${workload.kubernetes.aks-cluster-rbac}"
-    }
-}
