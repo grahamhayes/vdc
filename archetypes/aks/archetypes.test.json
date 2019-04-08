@@ -93,43 +93,43 @@
                         "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-admin-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Admin",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - NOC user",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.noc-user-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Azure Service Cluster User Role - Devs",
                         "roleDefinitionId": "${general.workload.kubernetes.aks-cluster-user-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.dev-user-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Reader Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.cluster-admin-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Reader Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.dev-user-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     },
                     {
                         "comments": "Reader Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "${general.workload.kubernetes.reader-rbac-role-id}",
                         "principalId": "${general.workload.kubernetes.noc-user-group-id}",
-                        "scope": "${general.workload.kubernetes.cluster-admin-group-id}"
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${workload.deployment-name}-rg"
                     }
                 ],
                 "aks-node-rbac": [
@@ -170,7 +170,7 @@
                     {
                         "name": "aks-cluster-01",
                         "properties": {
-                            "priority": 120,
+                            "priority": 130,
                             "action": {
                                 "type": "Allow"
                             },
@@ -211,7 +211,8 @@
             "kv",
             "acr",
             "aks",
-            "aks-cluster-role-assignments",
+            "role-assignments",
+            "aks-node-role-assignments",
             "permissions-scripts-pre-reqs",
             "scripts-pre-reqs",
             "create-ca-cert",
@@ -277,14 +278,28 @@
                     "dependencies": []
                 },
                 {
-                    "module": "aks-cluster-role-assignments",
+                    "module": "role-assignments",
                     "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
                     "source": {
                         "version": "1.0",
                         "template-path": "file(modules/role-assignments/1.0/azureDeploy.json)",
-                        "parameters-path": "file(modules/aks/1.0/azureDeploy.aks.cluster.roleAssignment.parameters.json)"
+                        "parameters-path": "file(modules/role-assignments/1.0/azureDeploy.parameters.json)"
                     },
-                    "dependencies": []
+                    "dependencies": [
+                        "aks"
+                    ]
+                },
+                {
+                    "module": "aks-node-role-assignments",
+                    "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
+                    "source": {
+                        "version": "1.0",
+                        "template-path": "file(modules/aks-node-role-assignments/1.0/azureDeploy.json)",
+                        "parameters-path": "file(modules/aks-node-role-assignments/1.0/azureDeploy.parameters.json)"
+                    },
+                    "dependencies": [
+                        "aks"
+                    ]
                 },
                 {
                     "module": "aks",
